@@ -1,0 +1,23 @@
+name: Investment Clock
+
+on:
+  schedule:
+    # 매월 15일 13:00 UTC (미국 CPI가 보통 다음 달 둘째 주 발표되므로 그 뒤).
+    # UTC 기준 — 한국시간 22:00.
+    - cron: "0 13 15 * *"
+  workflow_dispatch:        # 수동 실행 버튼
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run Investment Clock
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python investment_clock.py
